@@ -1,10 +1,14 @@
-import React from 'react';
+import React, {useEffect, useState } from 'react';
 import {
   Sparkles,
   MessageSquare,
   ChevronLeft,
   ChevronRight,
   Trash2,
+  User,
+  Settings,
+  Mail,
+  LogOut,
 } from 'lucide-react';
 
 const Sidebar = ({
@@ -17,6 +21,27 @@ const Sidebar = ({
   switchChat,
   clearChat,
 }) => {
+  const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
+
+  const handleProfileClick = () => {
+    setIsProfilePopupOpen(!isProfilePopupOpen);
+  };
+
+  const handleDeleteAllChats = () => {
+    // Add logic to delete all chats
+    console.log('Delete All Chats');
+  };
+
+  const handleContactUs = () => {
+    // Add logic to handle Contact Us
+    console.log('Contact Us');
+  };
+
+  const handleLogout = () => {
+    // Add logic to handle Logout
+    console.log('Log Out');
+  };
+
   return (
     <aside
       className={`fixed left-0 top-0 h-full transition-all duration-300 ${
@@ -53,7 +78,7 @@ const Sidebar = ({
       <div
         className={`${
           isSidebarOpen ? 'opacity-100' : 'opacity-0'
-        } transition-opacity duration-200`}
+        } transition-opacity duration-200 flex flex-col h-full`}
       >
         {/* Header */}
         <div className="h-[3.8rem] flex items-center px-4 border-b border-gray-800">
@@ -70,16 +95,15 @@ const Sidebar = ({
         <div className="p-4">
           <button
             onClick={startNewChat}
-            className={`w-full px-4 py-2 rounded-lg border ${
-              darkMode
-                ? 'border-gray-700 bg-gray-800/50 hover:bg-gray-800'
-                : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
-            } flex items-center justify-center space-x-2 transition-colors duration-200`}
+            className={`w-full px-4 py-2 rounded-lg flex items-center justify-center gap-2
+              ${darkMode ? 'bg-blue-500 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'}
+              text-white transition-colors duration-200`}
           >
-            <Sparkles className="w-5 h-5" />
+            <Sparkles className="w-4 h-4" />
             <span>New chat</span>
           </button>
         </div>
+
 
         {/* Chat History */}
         <div className="flex-1 overflow-y-auto">
@@ -132,6 +156,81 @@ const Sidebar = ({
           >
             Chat History
           </div>
+        </div>
+
+        {/* Profile Section */}
+        <div
+          className={`p-4 border-t border-gray-800 ${
+            darkMode ? 'bg-gray-900/50' : 'bg-gray-50/50'
+          } relative`}
+        >
+          <button
+            onClick={handleProfileClick}
+            className={`w-full px-4 py-2 rounded-lg ${
+              darkMode
+                ? 'bg-gray-800/50 hover:bg-gray-800'
+                : 'bg-gray-50 hover:bg-gray-100'
+            } flex items-center space-x-3 transition-colors duration-200`}
+          >
+            <User className="w-5 h-5" />
+            <span>Profile</span>
+          </button>
+
+          {/* Profile Popup */}
+          {isProfilePopupOpen && (
+            <div
+              className={`absolute bottom-16 left-4 w-56 rounded-lg shadow-lg ${
+                darkMode ? 'bg-gray-800' : 'bg-white'
+              } border ${
+                darkMode ? 'border-gray-700' : 'border-gray-200'
+              } z-50`}
+            >
+              <button
+                onClick={() => console.log('Settings')}
+                className={`w-full px-4 py-2 flex items-center space-x-3 ${
+                  darkMode
+                    ? 'hover:bg-gray-700 text-gray-200'
+                    : 'hover:bg-gray-100 text-gray-800'
+                }`}
+              >
+                <Settings className="w-5 h-5" />
+                <span>Settings</span>
+              </button>
+              <button
+                onClick={handleDeleteAllChats}
+                className={`w-full px-4 py-2 flex items-center space-x-3 ${
+                  darkMode
+                    ? 'hover:bg-gray-700 text-gray-200'
+                    : 'hover:bg-gray-100 text-gray-800'
+                }`}
+              >
+                <Trash2 className="w-5 h-5" />
+                <span>Delete All Chats</span>
+              </button>
+              <button
+                onClick={handleContactUs}
+                className={`w-full px-4 py-2 flex items-center space-x-3 ${
+                  darkMode
+                    ? 'hover:bg-gray-700 text-gray-200'
+                    : 'hover:bg-gray-100 text-gray-800'
+                }`}
+              >
+                <Mail className="w-5 h-5" />
+                <span>Contact Us</span>
+              </button>
+              <button
+                onClick={handleLogout}
+                className={`w-full px-4 py-2 flex items-center space-x-3 ${
+                  darkMode
+                    ? 'hover:bg-gray-700 text-gray-200'
+                    : 'hover:bg-gray-100 text-gray-800'
+                }`}
+              >
+                <LogOut className="w-5 h-5" />
+                <span>Log Out</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </aside>

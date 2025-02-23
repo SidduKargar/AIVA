@@ -106,38 +106,57 @@ const WelcomeCards = ({ darkMode, setActiveDocumentId, setMessages }) => {
     }
   };
 
+  const handleCodeSearch = async () => {
+    setMessages(prevMessages => [
+      ...prevMessages,
+      {
+        role: 'assistant',
+        content: 'What programming language are you looking for help with, and what would you like to find?'
+      }
+    ]);
+  };
+
+  const handleDocSearch = async () => {
+    setMessages(prevMessages => [
+      ...prevMessages,
+      {
+        role: 'assistant',
+        content: 'What documentation or technical information would you like to find?'
+      }
+    ]);
+  };
 
   return (
     <div className="h-[80vh] flex items-center justify-center p-4">
       <div className="text-center w-full max-w-6xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Document Upload Card */}
-          <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105`}>
+          <div className={`${darkMode ? 'bg-gray-800' : 'bg-gray-100'} p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105`}>
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 mx-auto flex items-center justify-center">
               <Upload className="w-6 h-6 text-white" />
             </div>
             <h2 className={`text-lg font-bold mt-4 mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
               Upload Document
             </h2>
-            <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>
+            <p className={darkMode ? 'text-gray-400' : 'text-gray-800'}>
               {selectedFile ? `Uploaded: ${selectedFile}` : 'Upload a document to analyze'}
             </p>
             <label className={`mt-4 inline-block px-4 py-2 rounded-lg cursor-pointer
-              ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'}
+              ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}
               ${documentUploading ? 'opacity-50 cursor-not-allowed' : ''}`}>
               <input
                 type="file"
                 className="hidden"
                 onChange={handleFileUpload}
                 disabled={documentUploading}
-                accept=".txt,.pdf,.doc,.docx"
+                accept=".txt,.pdf,.doc,.docx,.sql"
               />
               {documentUploading ? 'Uploading...' : 'Choose File'}
             </label>
           </div>
 
           {/* Image Processing Card */}
-          <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105`}>
+          <div className={`${darkMode ? 'bg-gray-800' : 'bg-gray-100'} p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105`}>
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-400 mx-auto flex items-center justify-center">
               <Image className="w-6 h-6 text-white" />
             </div>
@@ -148,7 +167,7 @@ const WelcomeCards = ({ darkMode, setActiveDocumentId, setMessages }) => {
               Upload and process images with AI
             </p>
             <label className={`mt-4 inline-block px-4 py-2 rounded-lg cursor-pointer
-              ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'}
+              ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}
               ${imageUploading ? 'opacity-50 cursor-not-allowed' : ''}`}>
               <input
                 type="file"
@@ -168,7 +187,11 @@ const WelcomeCards = ({ darkMode, setActiveDocumentId, setMessages }) => {
           </div>
 
           {/* Search Code Card */}
-          <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105`}>
+          {/* Updated Search Code Card */}
+          <div 
+            onClick={handleCodeSearch}
+            className={`${darkMode ? 'bg-gray-800' : 'bg-gray-100'} p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105 cursor-pointer`}
+          >
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-400 to-rose-400 mx-auto flex items-center justify-center">
               <Code className="w-6 h-6 text-white" />
             </div>
@@ -176,12 +199,14 @@ const WelcomeCards = ({ darkMode, setActiveDocumentId, setMessages }) => {
               Search Code
             </h2>
             <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>
-              Quickly find code snippets and examples
+              Get help with code in any programming language
             </p>
           </div>
 
-          {/* Documentation Card */}
-          <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105`}>
+          <div 
+            onClick={handleDocSearch}
+            className={`${darkMode ? 'bg-gray-800' : 'bg-gray-100'} p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105 cursor-pointer`}
+          >
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-red-400 mx-auto flex items-center justify-center">
               <FileText className="w-6 h-6 text-white" />
             </div>
@@ -189,9 +214,10 @@ const WelcomeCards = ({ darkMode, setActiveDocumentId, setMessages }) => {
               Find Documentation
             </h2>
             <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>
-              Access detailed documentation for various libraries
+              Search technical documentation and guides
             </p>
           </div>
+        
         </div>
       </div>
     </div>
