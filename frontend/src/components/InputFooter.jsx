@@ -38,8 +38,10 @@ const InputFooter = ({
     <footer
       className={`fixed bottom-0 right-0 ${
         isSidebarOpen ? 'left-64' : 'left-0'
-      } border-t ${
-        darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'
+      } transition-all duration-300 ${
+        darkMode
+          ? 'bg-gradient-to-t from-gray-900 to-gray-800'
+          : 'bg-gradient-to-t from-white to-gray-50'
       }`}
     >
       <div className="max-w-3xl mx-auto px-6 py-4">
@@ -55,30 +57,42 @@ const InputFooter = ({
                 }
               }}
               placeholder="Enter a prompt here"
-              className={`w-full p-4 pr-24 rounded-2xl resize-none ${
+              className={`w-full p-4 pr-24 rounded-2xl resize-none shadow-lg transition-all duration-300 ${
                 darkMode
-                  ? 'bg-gray-800 focus:bg-gray-800 border-gray-700'
-                  : 'bg-gray-50 focus:bg-gray-50 border-gray-200'
-              } border focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                  ? 'bg-gray-800 focus:bg-gray-800 border-gray-700 text-gray-100'
+                  : 'bg-white focus:bg-white border-gray-200 text-gray-900'
+              } border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:shadow-xl`}
               rows="2"
             />
             <div className="absolute right-2 bottom-2 flex items-center space-x-2">
               <button
                 type="button"
                 onClick={() => setDeepThink(!deepThink)}
-                className={`flex items-center gap-1 px-2 py-1 rounded ${
-                  darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-600 hover:bg-gray-100'
-                } ${deepThink ? 'bg-blue-50 text-blue-600' : ''}`}
+                className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-all duration-300 ${
+                  darkMode
+                    ? deepThink
+                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                    : deepThink
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
               >
                 <DeepThinkIcon />
-                <span className="text-sm">DeepThink (R1)</span>
+                <span className="text-sm font-medium">DeepThink (R1)</span>
               </button>
               <button
                 type="submit"
                 disabled={loading || !input?.trim()}
-                className={`p-2 rounded-lg ${
-                  darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
-                } ${!input?.trim() || loading ? 'opacity-50' : ''}`}
+                className={`p-2 rounded-lg transition-all duration-300 ${
+                  darkMode
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white'
+                    : 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white'
+                } ${
+                  !input?.trim() || loading
+                    ? 'opacity-50 cursor-not-allowed'
+                    : ''
+                }`}
               >
                 {loading ? (
                   <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
