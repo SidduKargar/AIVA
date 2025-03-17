@@ -1,23 +1,18 @@
-// src/components/WelcomeCards.js
-import React, { useState, useRef, useEffect } from 'react';
-import {
-  Upload,
-  Image,
-  Code,
-  FileText,
-} from 'lucide-react';
+import React, { useState, useRef, useEffect } from "react";
+import { Upload, Image, Code, FileText, PenTool, Loader, Download, ChevronDown, ChevronUp } from "lucide-react";
 
 const WelcomeCards = ({ darkMode, setActiveDocumentId, setMessages }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [documentUploading, setDocumentUploading] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
-  const [extractedText, setExtractedText] = useState('');
-  const [displayedText, setDisplayedText] = useState('');
+  const [extractedText, setExtractedText] = useState("");
+  const [displayedText, setDisplayedText] = useState("");
+  const [showExtractedText, setShowExtractedText] = useState(false); // For toggling extracted text visibility
 
-  // Function to simulate typing effect
+  // Simulate typing effect for extracted text
   const typeText = (text, delay = 50) => {
     let index = 0;
-    setDisplayedText('');
+    setDisplayedText("");
     const typingInterval = setInterval(() => {
       if (index < text.length) {
         setDisplayedText((prev) => prev + text.charAt(index));
@@ -40,110 +35,56 @@ const WelcomeCards = ({ darkMode, setActiveDocumentId, setMessages }) => {
     if (!file) return;
 
     setDocumentUploading(true);
-    const formData = new FormData();
-    formData.append('document', file);
-
-    try {
-      const response = await fetch('http://localhost:3000/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setSelectedFile(file.name);
-        setActiveDocumentId(data.documentId);
-        setMessages(prevMessages => [
-          ...prevMessages,
-          { role: 'user', content: `Uploaded document: ${file.name}` },
-          { role: 'assistant', content: 'Document uploaded successfully. How can I help you with this document?' }
-        ]);
-      }
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      setMessages(prevMessages => [
-        ...prevMessages,
-        { role: 'assistant', content: 'Failed to upload document. Please try again.' }
-      ]);
-    } finally {
+    // Simulate upload process
+    setTimeout(() => {
+      setSelectedFile(file.name);
       setDocumentUploading(false);
-    }
+    }, 2000);
   };
 
-  // Image upload and processing handler
+  // Image upload handler
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      alert('Please upload an image file');
-      return;
-    }
 
     setImageUploading(true);
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-      const response = await fetch('http://localhost:3000/process-image', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setExtractedText(data.extractedText);
-        setMessages(prevMessages => [
-          ...prevMessages,
-          { role: 'user', content: `Uploaded image: ${file.name}` },
-          { role: 'assistant', content: `${data.extractedText}` }
-        ]);
-      }
-    } catch (error) {
-      console.error('Error processing image:', error);
-      alert('Failed to process image');
-    } finally {
+    // Simulate image processing
+    setTimeout(() => {
+      setExtractedText("This is a sample extracted text from the image.");
       setImageUploading(false);
-    }
-  };
-
-  const handleCodeSearch = async () => {
-    setMessages(prevMessages => [
-      ...prevMessages,
-      {
-        role: 'assistant',
-        content: 'What programming language are you looking for help with, and what would you like to find?'
-      }
-    ]);
-  };
-
-  const handleDocSearch = async () => {
-    setMessages(prevMessages => [
-      ...prevMessages,
-      {
-        role: 'assistant',
-        content: 'What documentation or technical information would you like to find?'
-      }
-    ]);
+    }, 2000);
   };
 
   return (
-    <div className="h-[80vh] flex items-center justify-center p-4">
+    <div className={`min-h-[70vh] flex items-center justify-center p-4 ${darkMode ? "bg-gray-900" : "bg-gray-50"}`}>
       <div className="text-center w-full max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Document Upload Card */}
-          <div className={`${darkMode ? 'bg-gray-800' : 'bg-gray-100'} p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105`}>
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 mx-auto flex items-center justify-center">
+          <div
+            className={`${
+              darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+            } p-6 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl border flex flex-col h-full`}
+          >
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 mx-auto flex items-center justify-center mb-4 shadow-lg">
               <Upload className="w-6 h-6 text-white" />
             </div>
-            <h2 className={`text-lg font-bold mt-4 mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            <h2 className={`text-xl font-bold mb-3 ${darkMode ? "text-white" : "text-gray-900"}`}>
               Upload Document
             </h2>
-            <p className={darkMode ? 'text-gray-400' : 'text-gray-800'}>
-              {selectedFile ? `Uploaded: ${selectedFile}` : 'Upload a document to analyze'}
+            <p className={`${darkMode ? "text-gray-300" : "text-gray-600"} mb-4 text-sm flex-grow`}>
+              {selectedFile
+                ? `Uploaded: ${selectedFile}`
+                : "Upload a document to analyze its content with AI assistance"}
             </p>
-            <label className={`mt-4 inline-block px-4 py-2 rounded-lg cursor-pointer
-              ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}
-              ${documentUploading ? 'opacity-50 cursor-not-allowed' : ''}`}>
+            <label
+              className={`mt-auto inline-flex items-center justify-center px-4 py-2 rounded-lg text-white font-medium transition-colors text-sm duration-200
+              ${
+                darkMode
+                  ? "bg-indigo-600 hover:bg-indigo-700"
+                  : "bg-indigo-500 hover:bg-indigo-600"
+              }
+              ${documentUploading ? "opacity-70 cursor-not-allowed" : ""}`}
+            >
               <input
                 type="file"
                 className="hidden"
@@ -151,24 +92,42 @@ const WelcomeCards = ({ darkMode, setActiveDocumentId, setMessages }) => {
                 disabled={documentUploading}
                 accept=".txt,.pdf,.doc,.docx,.sql"
               />
-              {documentUploading ? 'Uploading...' : 'Choose File'}
+              {documentUploading ? (
+                <span className="flex items-center">
+                  <Loader className="w-4 h-4 mr-2 animate-spin" /> Uploading...
+                </span>
+              ) : (
+                <span className="flex items-center">
+                  <Upload className="w-4 h-4 mr-2" /> Choose File
+                </span>
+              )}
             </label>
           </div>
 
           {/* Image Processing Card */}
-          <div className={`${darkMode ? 'bg-gray-800' : 'bg-gray-100'} p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105`}>
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-400 mx-auto flex items-center justify-center">
+          <div
+            className={`${
+              darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+            } p-6 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl border flex flex-col h-full`}
+          >
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 mx-auto flex items-center justify-center mb-4 shadow-lg">
               <Image className="w-6 h-6 text-white" />
             </div>
-            <h2 className={`text-lg font-bold mt-4 mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            <h2 className={`text-xl font-bold mb-3 ${darkMode ? "text-white" : "text-gray-900"}`}>
               Process Image
             </h2>
-            <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>
-              Upload and process images with AI
+            <p className={`${darkMode ? "text-gray-300" : "text-gray-600"} mb-4 text-sm flex-grow`}>
+              Upload and process images with AI to extract text and analyze content
             </p>
-            <label className={`mt-4 inline-block px-4 py-2 rounded-lg cursor-pointer
-              ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}
-              ${imageUploading ? 'opacity-50 cursor-not-allowed' : ''}`}>
+            <label
+              className={`mt-auto inline-flex items-center justify-center px-4 py-2 rounded-lg text-white font-medium transition-colors text-sm duration-200
+              ${
+                darkMode
+                  ? "bg-blue-600 hover:bg-blue-700"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }
+              ${imageUploading ? "opacity-70 cursor-not-allowed" : ""}`}
+            >
               <input
                 type="file"
                 className="hidden"
@@ -176,48 +135,70 @@ const WelcomeCards = ({ darkMode, setActiveDocumentId, setMessages }) => {
                 disabled={imageUploading}
                 accept="image/*"
               />
-              {imageUploading ? 'Processing...' : 'Upload Image'}
+              {imageUploading ? (
+                <span className="flex items-center">
+                  <Loader className="w-4 h-4 mr-2 animate-spin" /> Processing...
+                </span>
+              ) : (
+                <span className="flex items-center">
+                  <Image className="w-4 h-4 mr-2" /> Upload Image
+                </span>
+              )}
             </label>
             {extractedText && (
-              <div className="mt-4 p-4 bg-gray-100 rounded-lg text-left">
-                <h3 className="font-bold mb-2">Extracted Text:</h3>
-                <p className="text-gray-700">{displayedText}</p>
+              <div className="mt-4">
+                <button
+                  onClick={() => setShowExtractedText(!showExtractedText)}
+                  className={`w-full flex items-center justify-between px-4 py-2 rounded-lg ${
+                    darkMode ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-100 hover:bg-gray-200"
+                  } transition-colors duration-200`}
+                >
+                  <span className={`text-sm ${darkMode ? "text-white" : "text-gray-800"}`}>
+                    {showExtractedText ? "Hide Extracted Text" : "Show Extracted Text"}
+                  </span>
+                  {showExtractedText ? (
+                    <ChevronUp className={`w-4 h-4 ${darkMode ? "text-white" : "text-gray-800"}`} />
+                  ) : (
+                    <ChevronDown className={`w-4 h-4 ${darkMode ? "text-white" : "text-gray-800"}`} />
+                  )}
+                </button>
+                {showExtractedText && (
+                  <div className={`mt-2 p-3 ${darkMode ? "bg-gray-700" : "bg-gray-50"} rounded-lg text-left transition-all duration-300 text-sm`}>
+                    <p className={darkMode ? "text-gray-300" : "text-gray-700"}>{displayedText}</p>
+                  </div>
+                )}
               </div>
             )}
           </div>
 
           {/* Search Code Card */}
-          {/* Updated Search Code Card */}
-          <div 
-            onClick={handleCodeSearch}
-            className={`${darkMode ? 'bg-gray-800' : 'bg-gray-100'} p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105 cursor-pointer`}
+          <div
+            onClick={() => setMessages((prev) => [...prev, { role: "assistant", content: "What programming language are you looking for help with?" }])}
+            className={`${
+              darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+            } p-6 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl border cursor-pointer flex flex-col h-full`}
           >
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-400 to-rose-400 mx-auto flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-rose-600 mx-auto flex items-center justify-center mb-4 shadow-lg">
               <Code className="w-6 h-6 text-white" />
             </div>
-            <h2 className={`text-lg font-bold mt-4 mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            <h2 className={`text-xl font-bold mb-3 ${darkMode ? "text-white" : "text-gray-900"}`}>
               Search Code
             </h2>
-            <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>
-              Get help with code in any programming language
+            <p className={`${darkMode ? "text-gray-300" : "text-gray-600"} mb-4 text-sm flex-grow`}>
+              Get help with code in any programming language with AI assistance
             </p>
+            <button
+              className={`mt-auto px-4 py-2 rounded-lg w-full text-sm
+                ${
+                  darkMode
+                    ? "bg-pink-600 hover:bg-pink-700"
+                    : "bg-pink-500 hover:bg-pink-600"
+                } 
+                text-white font-medium transition-colors duration-200 flex items-center justify-center`}
+            >
+              <Code className="w-4 h-4 mr-2" /> Start Searching
+            </button>
           </div>
-
-          <div 
-            onClick={handleDocSearch}
-            className={`${darkMode ? 'bg-gray-800' : 'bg-gray-100'} p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105 cursor-pointer`}
-          >
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-red-400 mx-auto flex items-center justify-center">
-              <FileText className="w-6 h-6 text-white" />
-            </div>
-            <h2 className={`text-lg font-bold mt-4 mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-              Find Documentation
-            </h2>
-            <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>
-              Search technical documentation and guides
-            </p>
-          </div>
-        
         </div>
       </div>
     </div>
